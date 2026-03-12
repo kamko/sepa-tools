@@ -26,6 +26,20 @@ This tool runs entirely in your browser - no server, no data upload, complete pr
 4. Review the payment summary
 5. Click "Download" to save the modified file
 
+## Docker
+
+```bash
+# Build
+docker build -t sepa-date-modifier .
+
+# Run
+docker run -p 8080:8080 sepa-date-modifier
+```
+
+Then open http://localhost:8080
+
+The image uses a minimal Go static file server on scratch (~6MB total).
+
 ## Supported Format
 
 - **pain.001.001.03** - ISO 20022 Customer Credit Transfer Initiation
