@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEPA Payment Date Modifier</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 32px;
+            font-size: 14px;
+        }
+
+        .drop-zone {
+            border: 2px dashed #ccc;
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #fafafa;
+            margin-bottom: 24px;
+        }
+
+        .drop-zone:hover, .drop-zone.drag-over {
+            border-color: #667eea;
+            background: #f0f0ff;
+        }
+
+        .drop-zone.has-file {
+            border-color: #10b981;
+            background: #ecfdf5;
+        }
+
+        .drop-zone-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .drop-zone-text {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .drop-zone-text strong {
+            color: #667eea;
+        }
+
+        .file-name {
+            color: #10b981;
+            font-weight: 600;
+            margin-top: 8px;
+            word-break: break-all;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input[type="date"] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="date"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .info-panel {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            display: none;
+        }
+
+        .info-panel.visible {
+            display: block;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .info-value {
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .info-value.old-date {
+            color: #ef4444;
+            text-decoration: line-through;
+        }
+
+        .info-value.new-date {
+            color: #10b981;
+        }
+
+        .date-change {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .arrow {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .error.visible {
+            display: block;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 24px;
+            color: #999;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SEPA Payment Date Modifier</h1>
+        <p class="subtitle">Update execution dates in pain.001.001.03 XML files</p>
+
+        <div class="drop-zone" id="dropZone">
+            <div class="drop-zone-icon">&#128196;</div>
+            <p class="drop-zone-text">
+                Drag & drop XML file here or <strong>click to select</strong>
+            </p>
+            <p class="file-name" id="fileName"></p>
+            <input type="file" class="file-input" id="fileInput" accept=".xml">
+        </div>
+
+        <div class="error" id="errorPanel"></div>
+
+        <div class="form-group">
+            <label for="newDate">New Execution Date / Novy datum splatnosti</label>
+            <input type="date" id="newDate">
+        </div>
+
+        <div class="info-panel" id="infoPanel">
+            <div class="info-row">
+                <span class="info-label">Date Change / Zmena datumu</span>
+                <div class="date-change">
+                    <span class="info-value old-date" id="oldDate">-</span>
+                    <span class="arrow">&#8594;</span>
+                    <span class="info-value new-date" id="newDateDisplay">-</span>
+                </div>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Transactions / Pocet transakcii</span>
+                <span class="info-value" id="txCount">-</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Total Amount / Celkova suma</span>
+                <span class="info-value" id="totalAmount">-</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Debtor / Platca</span>
+                <span class="info-value" id="debtorName">-</span>
+            </div>
+        </div>
+
+        <button class="btn btn-primary" id="downloadBtn" disabled>
+            Download Modified XML / Stiahnut upraveny subor
+        </button>
+
+        <p class="footer">Client-side only - your data never leaves your browser</p>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const fileName = document.getElementById('fileName');
+        const newDateInput = document.getElementById('newDate');
+        const infoPanel = document.getElementById('infoPanel');
+        const errorPanel = document.getElementById('errorPanel');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const oldDateEl = document.getElementById('oldDate');
+        const newDateDisplayEl = document.getElementById('newDateDisplay');
+        const txCountEl = document.getElementById('txCount');
+        const totalAmountEl = document.getElementById('totalAmount');
+        const debtorNameEl = document.getElementById('debtorName');
+
+        let xmlDoc = null;
+        let originalFileName = '';
+        let originalDate = '';
+
+        // Set default date to today
+        const today = new Date().toISOString().split('T')[0];
+        newDateInput.value = today;
+
+        // Drop zone events
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('drag-over');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        newDateInput.addEventListener('change', updatePreview);
+
+        function showError(message) {
+            errorPanel.textContent = message;
+            errorPanel.classList.add('visible');
+            infoPanel.classList.remove('visible');
+            downloadBtn.disabled = true;
+        }
+
+        function hideError() {
+            errorPanel.classList.remove('visible');
+        }
+
+        function handleFile(file) {
+            hideError();
+
+            if (!file.name.toLowerCase().endsWith('.xml')) {
+                showError('Please select an XML file.');
+                return;
+            }
+
+            originalFileName = file.name;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const parser = new DOMParser();
+                    xmlDoc = parser.parseFromString(e.target.result, 'application/xml');
+
+                    // Check for parse errors
+                    const parseError = xmlDoc.querySelector('parsererror');
+                    if (parseError) {
+                        showError('Invalid XML file: ' + parseError.textContent.substring(0, 100));
+                        xmlDoc = null;
+                        return;
+                    }
+
+                    // Find ReqdExctnDt to verify it's a SEPA file
+                    const reqdExctnDt = xmlDoc.getElementsByTagNameNS('*', 'ReqdExctnDt')[0];
+                    if (!reqdExctnDt) {
+                        showError('Not a valid SEPA payment file (ReqdExctnDt not found).');
+                        xmlDoc = null;
+                        return;
+                    }
+
+                    originalDate = reqdExctnDt.textContent;
+
+                    // Update UI
+                    fileName.textContent = file.name;
+                    dropZone.classList.add('has-file');
+
+                    updatePreview();
+                } catch (err) {
+                    showError('Error reading file: ' + err.message);
+                    xmlDoc = null;
+                }
+            };
+            reader.onerror = () => {
+                showError('Error reading file.');
+            };
+            reader.readAsText(file);
+        }
+
+        function updatePreview() {
+            if (!xmlDoc) return;
+
+            const newDate = newDateInput.value;
+
+            // Get payment info
+            const nbOfTxs = xmlDoc.getElementsByTagNameNS('*', 'NbOfTxs')[0];
+            const ctrlSum = xmlDoc.getElementsByTagNameNS('*', 'CtrlSum')[0];
+            const dbtrName = xmlDoc.getElementsByTagNameNS('*', 'Dbtr')[0]?.getElementsByTagNameNS('*', 'Nm')[0];
+
+            oldDateEl.textContent = originalDate;
+            newDateDisplayEl.textContent = newDate;
+            txCountEl.textContent = nbOfTxs ? nbOfTxs.textContent : '-';
+            totalAmountEl.textContent = ctrlSum ? ctrlSum.textContent + ' EUR' : '-';
+            debtorNameEl.textContent = dbtrName ? dbtrName.textContent.trim() : '-';
+
+            infoPanel.classList.add('visible');
+            downloadBtn.disabled = false;
+        }
+
+        downloadBtn.addEventListener('click', () => {
+            if (!xmlDoc) return;
+
+            const newDate = newDateInput.value;
+            const now = new Date().toISOString().split('.')[0]; // Format: 2026-03-12T10:30:45
+
+            // Update all ReqdExctnDt elements
+            const reqdExctnDtList = xmlDoc.getElementsByTagNameNS('*', 'ReqdExctnDt');
+            for (let i = 0; i < reqdExctnDtList.length; i++) {
+                reqdExctnDtList[i].textContent = newDate;
+            }
+
+            // Update CreDtTm to current datetime
+            const creDtTmList = xmlDoc.getElementsByTagNameNS('*', 'CreDtTm');
+            for (let i = 0; i < creDtTmList.length; i++) {
+                creDtTmList[i].textContent = now;
+            }
+
+            // Serialize back to string
+            const serializer = new XMLSerializer();
+            let xmlString = serializer.serializeToString(xmlDoc);
+
+            // Ensure proper XML declaration
+            if (!xmlString.startsWith('<?xml')) {
+                xmlString = '<?xml version="1.0" encoding="UTF-8"?>\n' + xmlString;
+            }
+
+            // Create download
+            const blob = new Blob([xmlString], { type: 'application/xml' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+
+            // Generate new filename
+            const baseName = originalFileName.replace(/\.xml$/i, '');
+            a.download = `${baseName}_${newDate}.xml`;
+
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+    </script>
+</body>
+</html>
