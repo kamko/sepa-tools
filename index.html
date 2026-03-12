@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="sk">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,75 +12,64 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
             min-height: 100vh;
             padding: 40px 20px;
         }
 
         .container {
-            max-width: 600px;
+            max-width: 500px;
             margin: 0 auto;
             background: white;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            padding: 40px;
+            border: 1px solid #ddd;
+            padding: 32px;
         }
 
         h1 {
-            color: #333;
-            font-size: 24px;
-            margin-bottom: 8px;
-            text-align: center;
+            color: #111;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
         }
 
         .subtitle {
             color: #666;
-            text-align: center;
-            margin-bottom: 32px;
-            font-size: 14px;
+            margin-bottom: 24px;
+            font-size: 13px;
         }
 
         .drop-zone {
-            border: 2px dashed #ccc;
-            border-radius: 12px;
-            padding: 40px 20px;
+            border: 1px dashed #999;
+            padding: 32px 16px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s ease;
             background: #fafafa;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .drop-zone:hover, .drop-zone.drag-over {
-            border-color: #667eea;
-            background: #f0f0ff;
+            border-color: #333;
+            background: #f0f0f0;
         }
 
         .drop-zone.has-file {
-            border-color: #10b981;
-            background: #ecfdf5;
-        }
-
-        .drop-zone-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
+            border-color: #2a2;
+            border-style: solid;
+            background: #f8fff8;
         }
 
         .drop-zone-text {
-            color: #666;
-            font-size: 14px;
-        }
-
-        .drop-zone-text strong {
-            color: #667eea;
+            color: #555;
+            font-size: 13px;
         }
 
         .file-name {
-            color: #10b981;
-            font-weight: 600;
+            color: #2a2;
+            font-weight: 500;
             margin-top: 8px;
             word-break: break-all;
+            font-size: 13px;
         }
 
         .file-input {
@@ -88,37 +77,36 @@
         }
 
         .form-group {
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         label {
             display: block;
             color: #333;
-            font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            font-size: 13px;
         }
 
         input[type="date"] {
             width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e5e7eb;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s ease;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            font-size: 14px;
         }
 
         input[type="date"]:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #333;
         }
 
         .info-panel {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 24px;
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            padding: 16px;
+            margin-bottom: 20px;
             display: none;
+            font-size: 13px;
         }
 
         .info-panel.visible {
@@ -128,8 +116,8 @@
         .info-row {
             display: flex;
             justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #e5e7eb;
+            padding: 6px 0;
+            border-bottom: 1px solid #eee;
         }
 
         .info-row:last-child {
@@ -138,69 +126,62 @@
 
         .info-label {
             color: #666;
-            font-size: 14px;
         }
 
         .info-value {
-            color: #333;
-            font-weight: 600;
-            font-size: 14px;
+            color: #111;
+            font-weight: 500;
         }
 
         .info-value.old-date {
-            color: #ef4444;
+            color: #a00;
             text-decoration: line-through;
         }
 
         .info-value.new-date {
-            color: #10b981;
+            color: #2a2;
         }
 
         .date-change {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
         }
 
         .arrow {
-            color: #667eea;
-            font-weight: bold;
+            color: #666;
         }
 
         .btn {
             width: 100%;
-            padding: 16px 24px;
+            padding: 12px 16px;
             border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
+            font-size: 14px;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s ease;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #111;
             color: white;
         }
 
         .btn-primary:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+            background: #333;
         }
 
         .btn-primary:disabled {
-            opacity: 0.5;
+            background: #999;
             cursor: not-allowed;
         }
 
         .error {
-            background: #fef2f2;
-            border: 1px solid #fecaca;
-            color: #dc2626;
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 24px;
-            font-size: 14px;
+            background: #fff0f0;
+            border: 1px solid #fcc;
+            color: #a00;
+            padding: 10px 12px;
+            margin-bottom: 20px;
+            font-size: 13px;
             display: none;
         }
 
@@ -210,22 +191,19 @@
 
         .footer {
             text-align: center;
-            margin-top: 24px;
+            margin-top: 20px;
             color: #999;
-            font-size: 12px;
+            font-size: 11px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>SEPA Payment Date Modifier</h1>
-        <p class="subtitle">Update execution dates in pain.001.001.03 XML files</p>
+        <h1 data-i18n="title">SEPA Payment Date Modifier</h1>
+        <p class="subtitle" data-i18n="subtitle">Update execution dates in pain.001.001.03 XML files</p>
 
         <div class="drop-zone" id="dropZone">
-            <div class="drop-zone-icon">&#128196;</div>
-            <p class="drop-zone-text">
-                Drag & drop XML file here or <strong>click to select</strong>
-            </p>
+            <p class="drop-zone-text" data-i18n="dropzone">Drop XML file here or click to select</p>
             <p class="file-name" id="fileName"></p>
             <input type="file" class="file-input" id="fileInput" accept=".xml">
         </div>
@@ -233,13 +211,13 @@
         <div class="error" id="errorPanel"></div>
 
         <div class="form-group">
-            <label for="newDate">New Execution Date / Novy datum splatnosti</label>
+            <label for="newDate" data-i18n="newDateLabel">New Execution Date</label>
             <input type="date" id="newDate">
         </div>
 
         <div class="info-panel" id="infoPanel">
             <div class="info-row">
-                <span class="info-label">Date Change / Zmena datumu</span>
+                <span class="info-label" data-i18n="dateChange">Date Change</span>
                 <div class="date-change">
                     <span class="info-value old-date" id="oldDate">-</span>
                     <span class="arrow">&#8594;</span>
@@ -247,27 +225,71 @@
                 </div>
             </div>
             <div class="info-row">
-                <span class="info-label">Transactions / Pocet transakcii</span>
+                <span class="info-label" data-i18n="transactions">Transactions</span>
                 <span class="info-value" id="txCount">-</span>
             </div>
             <div class="info-row">
-                <span class="info-label">Total Amount / Celkova suma</span>
+                <span class="info-label" data-i18n="totalAmount">Total Amount</span>
                 <span class="info-value" id="totalAmount">-</span>
             </div>
             <div class="info-row">
-                <span class="info-label">Debtor / Platca</span>
+                <span class="info-label" data-i18n="debtor">Debtor</span>
                 <span class="info-value" id="debtorName">-</span>
             </div>
         </div>
 
-        <button class="btn btn-primary" id="downloadBtn" disabled>
-            Download Modified XML / Stiahnut upraveny subor
+        <button class="btn btn-primary" id="downloadBtn" disabled data-i18n="download">
+            Download Modified XML
         </button>
 
-        <p class="footer">Client-side only - your data never leaves your browser</p>
+        <p class="footer" data-i18n="footer">Client-side only - your data never leaves your browser</p>
     </div>
 
     <script>
+        const translations = {
+            en: {
+                title: 'SEPA Payment Date Modifier',
+                subtitle: 'Update execution dates in pain.001.001.03 XML files',
+                dropzone: 'Drop XML file here or click to select',
+                newDateLabel: 'New Execution Date',
+                dateChange: 'Date Change',
+                transactions: 'Transactions',
+                totalAmount: 'Total Amount',
+                debtor: 'Debtor',
+                download: 'Download Modified XML',
+                footer: 'Client-side only - your data never leaves your browser',
+                errorXml: 'Please select an XML file.',
+                errorInvalid: 'Invalid XML file',
+                errorSepa: 'Not a valid SEPA payment file (ReqdExctnDt not found).',
+                errorRead: 'Error reading file'
+            },
+            sk: {
+                title: 'SEPA - Zmena dátumu platby',
+                subtitle: 'Úprava dátumu splatnosti v pain.001.001.03 XML súboroch',
+                dropzone: 'Presuňte XML súbor sem alebo kliknite pre výber',
+                newDateLabel: 'Nový dátum splatnosti',
+                dateChange: 'Zmena dátumu',
+                transactions: 'Počet transakcií',
+                totalAmount: 'Celková suma',
+                debtor: 'Platca',
+                download: 'Stiahnuť upravený XML',
+                footer: 'Spracovanie prebieha lokálne - dáta neopúšťajú prehliadač',
+                errorXml: 'Vyberte prosím XML súbor.',
+                errorInvalid: 'Neplatný XML súbor',
+                errorSepa: 'Neplatný SEPA platobný súbor (ReqdExctnDt sa nenašiel).',
+                errorRead: 'Chyba pri čítaní súboru'
+            }
+        };
+
+        const lang = navigator.language.startsWith('sk') ? 'sk' : 'en';
+        const t = translations[lang];
+
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (t[key]) el.textContent = t[key];
+        });
+        document.documentElement.lang = lang;
+
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileInput');
         const fileName = document.getElementById('fileName');
@@ -333,7 +355,7 @@
             hideError();
 
             if (!file.name.toLowerCase().endsWith('.xml')) {
-                showError('Please select an XML file.');
+                showError(t.errorXml);
                 return;
             }
 
@@ -348,7 +370,7 @@
                     // Check for parse errors
                     const parseError = xmlDoc.querySelector('parsererror');
                     if (parseError) {
-                        showError('Invalid XML file: ' + parseError.textContent.substring(0, 100));
+                        showError(t.errorInvalid + ': ' + parseError.textContent.substring(0, 100));
                         xmlDoc = null;
                         return;
                     }
@@ -356,7 +378,7 @@
                     // Find ReqdExctnDt to verify it's a SEPA file
                     const reqdExctnDt = xmlDoc.getElementsByTagNameNS('*', 'ReqdExctnDt')[0];
                     if (!reqdExctnDt) {
-                        showError('Not a valid SEPA payment file (ReqdExctnDt not found).');
+                        showError(t.errorSepa);
                         xmlDoc = null;
                         return;
                     }
@@ -369,12 +391,12 @@
 
                     updatePreview();
                 } catch (err) {
-                    showError('Error reading file: ' + err.message);
+                    showError(t.errorRead + ': ' + err.message);
                     xmlDoc = null;
                 }
             };
             reader.onerror = () => {
-                showError('Error reading file.');
+                showError(t.errorRead);
             };
             reader.readAsText(file);
         }
