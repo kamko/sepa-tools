@@ -1,6 +1,11 @@
-# SEPA Payment Date Modifier
+# sepa-tools
 
-A simple browser-based tool to update execution dates in SEPA payment XML files (pain.001.001.03 format).
+Browser-based utilities for SEPA payment XML files (pain.001.001.03).
+
+## Tools
+
+### Date Modifier
+Update execution dates in SEPA payment files.
 
 ## Problem
 
@@ -30,10 +35,10 @@ This tool runs entirely in your browser - no server, no data upload, complete pr
 
 ```bash
 # Build
-docker build -t sepa-date-modifier .
+docker build -t sepa-tools .
 
 # Run
-docker run -p 8080:8080 sepa-date-modifier
+docker run -p 8080:8080 sepa-tools
 ```
 
 Then open http://localhost:8080
