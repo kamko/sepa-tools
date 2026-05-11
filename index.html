@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SEPA Tools - Date Modifier</title>
+    <title>SEPA Tools</title>
     <style>
         * {
             box-sizing: border-box;
@@ -11,177 +11,138 @@
             padding: 0;
         }
 
+        :root {
+            --bg: #f4f1ea;
+            --panel: #fffdf8;
+            --line: #d8d0c3;
+            --line-strong: #8d7c61;
+            --text: #1f1a14;
+            --muted: #6e6253;
+            --accent: #14532d;
+            --accent-soft: #edf7ef;
+            --danger: #8c1d18;
+            --danger-soft: #fff1ef;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f5f5;
+            font-family: Georgia, "Times New Roman", serif;
+            background:
+                radial-gradient(circle at top left, #fdf9ef 0, transparent 32%),
+                linear-gradient(180deg, #f8f4ec 0%, var(--bg) 100%);
+            color: var(--text);
             min-height: 100vh;
-            padding: 40px 20px;
+            padding: 32px 16px 48px;
         }
 
         .container {
-            max-width: 500px;
+            max-width: 1080px;
             margin: 0 auto;
-            background: white;
-            border: 1px solid #ddd;
-            padding: 32px;
+            background: var(--panel);
+            border: 1px solid var(--line);
+            box-shadow: 0 24px 80px rgba(31, 26, 20, 0.08);
+            padding: 28px;
+        }
+
+        .hero {
+            margin-bottom: 24px;
         }
 
         h1 {
-            color: #111;
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 4px;
+            font-size: clamp(28px, 4vw, 40px);
+            line-height: 1;
+            letter-spacing: -0.03em;
+            margin-bottom: 8px;
         }
 
         .subtitle {
-            color: #666;
-            margin-bottom: 24px;
-            font-size: 13px;
+            color: var(--muted);
+            font-size: 15px;
+            max-width: 720px;
         }
 
-        .drop-zone {
-            border: 1px dashed #999;
-            padding: 32px 16px;
-            text-align: center;
-            cursor: pointer;
-            background: #fafafa;
+        .tool-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
             margin-bottom: 20px;
         }
 
-        .drop-zone:hover, .drop-zone.drag-over {
-            border-color: #333;
-            background: #f0f0f0;
+        .tab-btn {
+            border: 1px solid var(--line);
+            background: transparent;
+            color: var(--muted);
+            padding: 10px 14px;
+            font: inherit;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--line-strong);
+            color: var(--text);
+        }
+
+        .tab-btn.active {
+            border-color: var(--text);
+            background: var(--text);
+            color: #fff;
+        }
+
+        .drop-zone {
+            border: 1px dashed var(--line-strong);
+            padding: 30px 18px;
+            text-align: center;
+            cursor: pointer;
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(246, 241, 233, 0.95)),
+                repeating-linear-gradient(
+                    -45deg,
+                    rgba(141, 124, 97, 0.05),
+                    rgba(141, 124, 97, 0.05) 10px,
+                    transparent 10px,
+                    transparent 20px
+                );
+            margin-bottom: 16px;
+            transition: 0.2s ease;
+        }
+
+        .drop-zone:hover,
+        .drop-zone.drag-over {
+            border-color: var(--text);
+            background-color: #f3eee4;
         }
 
         .drop-zone.has-file {
-            border-color: #2a2;
             border-style: solid;
-            background: #f8fff8;
+            border-color: var(--accent);
+            background: var(--accent-soft);
         }
 
         .drop-zone-text {
-            color: #555;
-            font-size: 13px;
+            color: var(--muted);
+            font-size: 15px;
         }
 
         .file-name {
-            color: #2a2;
-            font-weight: 500;
-            margin-top: 8px;
-            word-break: break-all;
-            font-size: 13px;
+            color: var(--accent);
+            font-weight: 700;
+            margin-top: 10px;
+            word-break: break-word;
+            font-size: 14px;
         }
 
         .file-input {
             display: none;
         }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            color: #333;
-            font-weight: 500;
-            margin-bottom: 6px;
-            font-size: 13px;
-        }
-
-        input[type="date"] {
-            width: 100%;
-            padding: 8px 10px;
-            border: 1px solid #ccc;
-            font-size: 14px;
-        }
-
-        input[type="date"]:focus {
-            outline: none;
-            border-color: #333;
-        }
-
-        .info-panel {
-            background: #f9f9f9;
-            border: 1px solid #e0e0e0;
-            padding: 16px;
-            margin-bottom: 20px;
-            display: none;
-            font-size: 13px;
-        }
-
-        .info-panel.visible {
-            display: block;
-        }
-
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 6px 0;
-            border-bottom: 1px solid #eee;
-        }
-
-        .info-row:last-child {
-            border-bottom: none;
-        }
-
-        .info-label {
-            color: #666;
-        }
-
-        .info-value {
-            color: #111;
-            font-weight: 500;
-        }
-
-        .info-value.old-date {
-            color: #a00;
-            text-decoration: line-through;
-        }
-
-        .info-value.new-date {
-            color: #2a2;
-        }
-
-        .date-change {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .arrow {
-            color: #666;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 12px 16px;
-            border: none;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-        }
-
-        .btn-primary {
-            background: #111;
-            color: white;
-        }
-
-        .btn-primary:hover:not(:disabled) {
-            background: #333;
-        }
-
-        .btn-primary:disabled {
-            background: #999;
-            cursor: not-allowed;
-        }
-
         .error {
-            background: #fff0f0;
-            border: 1px solid #fcc;
-            color: #a00;
-            padding: 10px 12px;
-            margin-bottom: 20px;
-            font-size: 13px;
+            background: var(--danger-soft);
+            border: 1px solid #f3beb8;
+            color: var(--danger);
+            padding: 12px 14px;
+            margin-bottom: 16px;
+            font-size: 14px;
             display: none;
         }
 
@@ -189,133 +150,514 @@
             display: block;
         }
 
+        .tool-panel {
+            display: none;
+        }
+
+        .tool-panel.active {
+            display: block;
+        }
+
+        .panel-card {
+            border: 1px solid var(--line);
+            background: #fff;
+            padding: 18px;
+        }
+
+        .panel-title {
+            font-size: 18px;
+            margin-bottom: 6px;
+        }
+
+        .panel-copy {
+            color: var(--muted);
+            font-size: 14px;
+            margin-bottom: 18px;
+            max-width: 760px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+            max-width: 280px;
+        }
+
+        label {
+            display: block;
+            color: var(--text);
+            font-weight: 700;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+
+        input[type="date"] {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--line);
+            background: #fff;
+            font: inherit;
+            font-size: 14px;
+        }
+
+        input[type="date"]:focus {
+            outline: none;
+            border-color: var(--text);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .info-item {
+            border: 1px solid var(--line);
+            background: #fcfaf5;
+            padding: 14px;
+        }
+
+        .info-label {
+            display: block;
+            color: var(--muted);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 6px;
+        }
+
+        .info-value {
+            font-size: 16px;
+            line-height: 1.3;
+            word-break: break-word;
+        }
+
+        .date-change {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .old-date {
+            color: var(--danger);
+            text-decoration: line-through;
+        }
+
+        .new-date {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .button-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .btn {
+            border: 1px solid var(--text);
+            background: var(--text);
+            color: #fff;
+            padding: 12px 16px;
+            font: inherit;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .btn:hover:not(:disabled) {
+            background: #3a3127;
+            border-color: #3a3127;
+        }
+
+        .btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #f3eee4;
+        }
+
+        .note {
+            border-left: 3px solid var(--line-strong);
+            background: #faf6ee;
+            color: var(--muted);
+            padding: 12px 14px;
+            font-size: 14px;
+            margin-bottom: 18px;
+        }
+
+        .empty-state {
+            border: 1px dashed var(--line);
+            padding: 20px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 14px;
+            background: #fcfaf5;
+        }
+
+        .qr-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .qr-card {
+            border: 1px solid var(--line);
+            background: #fff;
+            padding: 16px;
+            display: grid;
+            gap: 14px;
+        }
+
+        .qr-card-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: baseline;
+        }
+
+        .qr-card-title {
+            font-size: 18px;
+            line-height: 1.2;
+        }
+
+        .qr-card-amount {
+            color: var(--accent);
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .qr-canvas-wrap {
+            border: 1px solid var(--line);
+            background: #fff;
+            padding: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 244px;
+        }
+
+        .qr-canvas-wrap canvas {
+            width: min(100%, 220px);
+            height: auto;
+        }
+
+        .qr-meta {
+            display: grid;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .qr-meta-row {
+            display: grid;
+            grid-template-columns: 78px 1fr;
+            gap: 10px;
+            align-items: start;
+        }
+
+        .qr-meta-label {
+            color: var(--muted);
+        }
+
+        .qr-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
         .footer {
             text-align: center;
-            margin-top: 20px;
-            color: #999;
-            font-size: 11px;
+            margin-top: 22px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        @media (max-width: 700px) {
+            .container {
+                padding: 18px;
+            }
+
+            .qr-card-header {
+                align-items: start;
+                flex-direction: column;
+            }
+        }
+
+        @media print {
+            body {
+                background: #fff;
+                padding: 0;
+            }
+
+            .container {
+                max-width: none;
+                box-shadow: none;
+                border: none;
+                padding: 0;
+            }
+
+            .hero,
+            .tool-tabs,
+            .drop-zone,
+            .error,
+            #datePanel,
+            #qrToolbar,
+            .footer {
+                display: none !important;
+            }
+
+            .tool-panel {
+                display: block !important;
+            }
+
+            .qr-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .qr-card {
+                break-inside: avoid;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 data-i18n="title">SEPA Payment Date Modifier</h1>
-        <p class="subtitle" data-i18n="subtitle">Update execution dates in pain.001.001.03 XML files</p>
+        <div class="hero">
+            <h1 data-i18n="title">SEPA Tools</h1>
+            <p class="subtitle" data-i18n="subtitle">Offline browser tools for SEPA payment XML files.</p>
+        </div>
+
+        <div class="tool-tabs" role="tablist" aria-label="SEPA tools">
+            <button class="tab-btn active" type="button" data-tool-tab="date" data-i18n="tabDate">Date Modifier</button>
+            <button class="tab-btn" type="button" data-tool-tab="qr" data-i18n="tabQr">Payment QR Codes</button>
+        </div>
 
         <div class="drop-zone" id="dropZone">
             <p class="drop-zone-text" data-i18n="dropzone">Drop XML file here or click to select</p>
             <p class="file-name" id="fileName"></p>
-            <input type="file" class="file-input" id="fileInput" accept=".xml">
+            <input type="file" class="file-input" id="fileInput" accept=".xml,text/xml,application/xml">
         </div>
 
         <div class="error" id="errorPanel"></div>
 
-        <div class="form-group">
-            <label for="newDate" data-i18n="newDateLabel">New Execution Date</label>
-            <input type="date" id="newDate">
-        </div>
+        <section class="tool-panel active" id="datePanel" data-tool-panel="date">
+            <div class="panel-card">
+                <h2 class="panel-title" data-i18n="datePanelTitle">Shift the execution date</h2>
+                <p class="panel-copy" data-i18n="datePanelCopy">Update the requested execution date and refresh the creation timestamp before uploading the file to your bank.</p>
 
-        <div class="info-panel" id="infoPanel">
-            <div class="info-row">
-                <span class="info-label" data-i18n="dateChange">Date Change</span>
-                <div class="date-change">
-                    <span class="info-value old-date" id="oldDate">-</span>
-                    <span class="arrow">&#8594;</span>
-                    <span class="info-value new-date" id="newDateDisplay">-</span>
+                <div class="form-group">
+                    <label for="newDate" data-i18n="newDateLabel">New Execution Date</label>
+                    <input type="date" id="newDate">
+                </div>
+
+                <div class="info-grid" id="dateInfoPanel" hidden>
+                    <div class="info-item">
+                        <span class="info-label" data-i18n="dateChange">Date Change</span>
+                        <div class="info-value date-change">
+                            <span class="old-date" id="oldDate">-</span>
+                            <span>&#8594;</span>
+                            <span class="new-date" id="newDateDisplay">-</span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label" data-i18n="transactions">Transactions</span>
+                        <span class="info-value" id="txCount">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label" data-i18n="totalAmount">Total Amount</span>
+                        <span class="info-value" id="totalAmount">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label" data-i18n="debtor">Debtor</span>
+                        <span class="info-value" id="debtorName">-</span>
+                    </div>
+                </div>
+
+                <div class="button-row">
+                    <button class="btn" id="downloadBtn" disabled data-i18n="download">Download Modified XML</button>
                 </div>
             </div>
-            <div class="info-row">
-                <span class="info-label" data-i18n="transactions">Transactions</span>
-                <span class="info-value" id="txCount">-</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label" data-i18n="totalAmount">Total Amount</span>
-                <span class="info-value" id="totalAmount">-</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label" data-i18n="debtor">Debtor</span>
-                <span class="info-value" id="debtorName">-</span>
-            </div>
-        </div>
+        </section>
 
-        <button class="btn btn-primary" id="downloadBtn" disabled data-i18n="download">
-            Download Modified XML
-        </button>
+        <section class="tool-panel" id="qrPanel" data-tool-panel="qr">
+            <div class="panel-card">
+                <h2 class="panel-title" data-i18n="qrPanelTitle">Generate payment QR codes</h2>
+                <p class="panel-copy" data-i18n="qrPanelCopy">Create one EPC payment QR code per SEPA transfer, ready to scan in banking apps that support SEPA QR or GiroCode.</p>
 
-        <p class="footer" data-i18n="footer">Client-side only - your data never leaves your browser</p>
+                <div class="note" data-i18n="qrNote">The QR payload uses the official EPC SEPA Credit Transfer format. Payment data stays in your browser and is not sent anywhere.</div>
+
+                <div class="info-grid" id="qrInfoPanel" hidden>
+                    <div class="info-item">
+                        <span class="info-label" data-i18n="qrFormat">QR Format</span>
+                        <span class="info-value">EPC / SCT</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label" data-i18n="transactions">Transactions</span>
+                        <span class="info-value" id="qrTxCount">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label" data-i18n="totalAmount">Total Amount</span>
+                        <span class="info-value" id="qrTotalAmount">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label" data-i18n="executionDate">Execution Date</span>
+                        <span class="info-value" id="qrExecutionDate">-</span>
+                    </div>
+                </div>
+
+                <div class="button-row" id="qrToolbar">
+                    <button class="btn btn-secondary" type="button" id="printQrBtn" disabled data-i18n="printQr">Print QR Sheet</button>
+                </div>
+
+                <div class="empty-state" id="qrEmptyState" data-i18n="qrEmpty">Load a SEPA payment XML file to generate one QR code for each payment.</div>
+                <div class="qr-grid" id="qrGrid"></div>
+            </div>
+        </section>
+
+        <p class="footer" data-i18n="footer">Client-side only. Your payment data never leaves your browser.</p>
     </div>
 
+    <script src="vendor/qrcode.js"></script>
+    <script src="vendor/qrcode_UTF8.js"></script>
     <script>
         const translations = {
             en: {
-                title: 'SEPA Payment Date Modifier',
-                subtitle: 'Update execution dates in pain.001.001.03 XML files',
+                title: 'SEPA Tools',
+                subtitle: 'Offline browser tools for SEPA payment XML files.',
+                tabDate: 'Date Modifier',
+                tabQr: 'Payment QR Codes',
                 dropzone: 'Drop XML file here or click to select',
+                datePanelTitle: 'Shift the execution date',
+                datePanelCopy: 'Update the requested execution date and refresh the creation timestamp before uploading the file to your bank.',
                 newDateLabel: 'New Execution Date',
                 dateChange: 'Date Change',
                 transactions: 'Transactions',
                 totalAmount: 'Total Amount',
                 debtor: 'Debtor',
                 download: 'Download Modified XML',
-                footer: 'Client-side only - your data never leaves your browser',
+                qrPanelTitle: 'Generate payment QR codes',
+                qrPanelCopy: 'Create one EPC payment QR code per SEPA transfer, ready to scan in banking apps that support SEPA QR or GiroCode.',
+                qrNote: 'The QR payload uses the official EPC SEPA Credit Transfer format. Payment data stays in your browser and is not sent anywhere.',
+                qrFormat: 'QR Format',
+                executionDate: 'Execution Date',
+                printQr: 'Print QR Sheet',
+                qrEmpty: 'Load a SEPA payment XML file to generate one QR code for each payment.',
+                creditor: 'Creditor',
+                iban: 'IBAN',
+                bic: 'BIC',
+                remittance: 'Remittance',
+                reference: 'Reference',
+                downloadPng: 'Download PNG',
                 errorXml: 'Please select an XML file.',
                 errorInvalid: 'Invalid XML file',
                 errorSepa: 'Not a valid SEPA payment file (ReqdExctnDt not found).',
-                errorRead: 'Error reading file'
+                errorRead: 'Error reading file',
+                errorQrCurrency: 'QR codes can only be generated for EUR payments.',
+                errorQrFields: 'A payment is missing creditor name or IBAN, so its QR code could not be generated.',
+                errorQrTooLong: 'The payment details are too long for an EPC QR payload.',
+                footer: 'Client-side only. Your payment data never leaves your browser.'
             },
             sk: {
-                title: 'SEPA - Zmena dátumu platby',
-                subtitle: 'Úprava dátumu splatnosti v pain.001.001.03 XML súboroch',
-                dropzone: 'Presuňte XML súbor sem alebo kliknite pre výber',
-                newDateLabel: 'Nový dátum splatnosti',
-                dateChange: 'Zmena dátumu',
-                transactions: 'Počet transakcií',
-                totalAmount: 'Celková suma',
+                title: 'SEPA Nastroje',
+                subtitle: 'Offline nastroje v prehliadaci pre SEPA XML subory.',
+                tabDate: 'Zmena datumu',
+                tabQr: 'Platobne QR kody',
+                dropzone: 'Pretiahnite XML subor sem alebo kliknite pre vyber',
+                datePanelTitle: 'Posun datumu splatnosti',
+                datePanelCopy: 'Upravte pozadovany datum vykonania a obnovte cas vytvorenia suboru pred nahratim do banky.',
+                newDateLabel: 'Novy datum vykonania',
+                dateChange: 'Zmena datumu',
+                transactions: 'Transakcie',
+                totalAmount: 'Celkova suma',
                 debtor: 'Platca',
-                download: 'Stiahnuť upravený XML',
-                footer: 'Spracovanie prebieha lokálne - dáta neopúšťajú prehliadač',
-                errorXml: 'Vyberte prosím XML súbor.',
-                errorInvalid: 'Neplatný XML súbor',
-                errorSepa: 'Neplatný SEPA platobný súbor (ReqdExctnDt sa nenašiel).',
-                errorRead: 'Chyba pri čítaní súboru'
+                download: 'Stiahnut upraveny XML',
+                qrPanelTitle: 'Vygenerovat QR kody platieb',
+                qrPanelCopy: 'Vytvorte jeden EPC platobny QR kod pre kazdy SEPA prevod, pripraveny na skenovanie v bankovych aplikaciach so SEPA QR alebo GiroCode.',
+                qrNote: 'QR obsah pouziva oficialny EPC format pre SEPA Credit Transfer. Platobne data zostavaju len vo vasom prehliadaci.',
+                qrFormat: 'QR format',
+                executionDate: 'Datum vykonania',
+                printQr: 'Tlac QR karty',
+                qrEmpty: 'Nahrajte SEPA XML subor a vygeneruje sa jeden QR kod pre kazdu platbu.',
+                creditor: 'Prijemca',
+                iban: 'IBAN',
+                bic: 'BIC',
+                remittance: 'Sprava',
+                reference: 'Referencia',
+                downloadPng: 'Stiahnut PNG',
+                errorXml: 'Vyberte prosim XML subor.',
+                errorInvalid: 'Neplatny XML subor',
+                errorSepa: 'Neplatny SEPA platobny subor (ReqdExctnDt sa nenasiel).',
+                errorRead: 'Chyba pri citani suboru',
+                errorQrCurrency: 'QR kody je mozne vytvorit iba pre platby v mene EUR.',
+                errorQrFields: 'Platbe chyba nazov prijemcu alebo IBAN, preto jej QR kod nebolo mozne vytvorit.',
+                errorQrTooLong: 'Detaily platby su prilis dlhe pre EPC QR payload.',
+                footer: 'Spracovanie prebieha lokalne. Vase platobne data neopustia prehliadac.'
             }
         };
 
-        const lang = navigator.language.startsWith('sk') ? 'sk' : 'en';
+        const lang = navigator.language && navigator.language.toLowerCase().startsWith('sk') ? 'sk' : 'en';
         const t = translations[lang];
 
-        document.querySelectorAll('[data-i18n]').forEach(el => {
-            const key = el.getAttribute('data-i18n');
-            if (t[key]) el.textContent = t[key];
+        document.querySelectorAll('[data-i18n]').forEach((element) => {
+            const key = element.getAttribute('data-i18n');
+            if (t[key]) {
+                element.textContent = t[key];
+            }
         });
         document.documentElement.lang = lang;
+
+        const currencyFormatter = new Intl.NumberFormat(lang, {
+            style: 'currency',
+            currency: 'EUR'
+        });
+
+        const textEncoder = new TextEncoder();
 
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileInput');
         const fileName = document.getElementById('fileName');
         const newDateInput = document.getElementById('newDate');
-        const infoPanel = document.getElementById('infoPanel');
         const errorPanel = document.getElementById('errorPanel');
         const downloadBtn = document.getElementById('downloadBtn');
+        const dateInfoPanel = document.getElementById('dateInfoPanel');
+        const qrInfoPanel = document.getElementById('qrInfoPanel');
         const oldDateEl = document.getElementById('oldDate');
         const newDateDisplayEl = document.getElementById('newDateDisplay');
         const txCountEl = document.getElementById('txCount');
         const totalAmountEl = document.getElementById('totalAmount');
         const debtorNameEl = document.getElementById('debtorName');
+        const qrTxCountEl = document.getElementById('qrTxCount');
+        const qrTotalAmountEl = document.getElementById('qrTotalAmount');
+        const qrExecutionDateEl = document.getElementById('qrExecutionDate');
+        const qrGrid = document.getElementById('qrGrid');
+        const qrEmptyState = document.getElementById('qrEmptyState');
+        const printQrBtn = document.getElementById('printQrBtn');
+        const tabButtons = Array.from(document.querySelectorAll('[data-tool-tab]'));
+        const tabPanels = Array.from(document.querySelectorAll('[data-tool-panel]'));
 
-        let xmlDoc = null;
-        let originalFileName = '';
-        let originalDate = '';
+        const state = {
+            xmlDoc: null,
+            originalFileName: '',
+            summary: null
+        };
 
-        // Set default date to today
-        const today = new Date().toISOString().split('T')[0];
-        newDateInput.value = today;
+        newDateInput.value = formatDateForInput(new Date());
 
-        // Drop zone events
+        tabButtons.forEach((button) => {
+            button.addEventListener('click', () => setActiveTab(button.dataset.toolTab));
+        });
+
         dropZone.addEventListener('click', () => fileInput.click());
 
-        dropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
+        dropZone.addEventListener('dragover', (event) => {
+            event.preventDefault();
             dropZone.classList.add('drag-over');
         });
 
@@ -323,32 +665,140 @@
             dropZone.classList.remove('drag-over');
         });
 
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
+        dropZone.addEventListener('drop', (event) => {
+            event.preventDefault();
             dropZone.classList.remove('drag-over');
-            const files = e.dataTransfer.files;
+            const files = event.dataTransfer.files;
             if (files.length > 0) {
                 handleFile(files[0]);
             }
         });
 
-        fileInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                handleFile(e.target.files[0]);
+        fileInput.addEventListener('change', (event) => {
+            if (event.target.files.length > 0) {
+                handleFile(event.target.files[0]);
             }
         });
 
-        newDateInput.addEventListener('change', updatePreview);
+        newDateInput.addEventListener('change', renderDatePanel);
+
+        printQrBtn.addEventListener('click', () => window.print());
+
+        downloadBtn.addEventListener('click', () => {
+            if (!state.xmlDoc) {
+                return;
+            }
+
+            const outputDoc = state.xmlDoc.cloneNode(true);
+            const newDate = newDateInput.value;
+            const now = new Date().toISOString().split('.')[0];
+
+            Array.from(outputDoc.getElementsByTagNameNS('*', 'ReqdExctnDt')).forEach((node) => {
+                node.textContent = newDate;
+            });
+
+            Array.from(outputDoc.getElementsByTagNameNS('*', 'CreDtTm')).forEach((node) => {
+                node.textContent = now;
+            });
+
+            const serializer = new XMLSerializer();
+            let xmlString = serializer.serializeToString(outputDoc);
+
+            if (!xmlString.startsWith('<?xml')) {
+                xmlString = '<?xml version="1.0" encoding="UTF-8"?>\n' + xmlString;
+            }
+
+            const blob = new Blob([xmlString], { type: 'application/xml' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+
+            const baseName = state.originalFileName.replace(/\.xml$/i, '');
+            link.download = `${baseName}_${newDate}.xml`;
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        });
+
+        function setActiveTab(tabId) {
+            tabButtons.forEach((button) => {
+                button.classList.toggle('active', button.dataset.toolTab === tabId);
+            });
+
+            tabPanels.forEach((panel) => {
+                panel.classList.toggle('active', panel.dataset.toolPanel === tabId);
+            });
+        }
+
+        function formatDateForInput(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function sanitizeText(value) {
+            return (value || '').replace(/\s+/g, ' ').trim();
+        }
+
+        function byteLength(value) {
+            return textEncoder.encode(value).length;
+        }
+
+        function truncateValue(value, maxChars, maxBytes = Number.POSITIVE_INFINITY) {
+            const input = sanitizeText(value);
+            if (!input) {
+                return '';
+            }
+
+            let output = '';
+            for (const char of input) {
+                if (output.length >= maxChars) {
+                    break;
+                }
+
+                const nextValue = output + char;
+                if (byteLength(nextValue) > maxBytes) {
+                    break;
+                }
+
+                output = nextValue;
+            }
+
+            return output;
+        }
 
         function showError(message) {
             errorPanel.textContent = message;
             errorPanel.classList.add('visible');
-            infoPanel.classList.remove('visible');
-            downloadBtn.disabled = true;
         }
 
         function hideError() {
             errorPanel.classList.remove('visible');
+        }
+
+        function readChildText(parent, tagName) {
+            if (!parent) {
+                return '';
+            }
+
+            const node = parent.getElementsByTagNameNS('*', tagName)[0];
+            return node ? sanitizeText(node.textContent) : '';
+        }
+
+        function formatAmount(value, currency) {
+            const amount = Number.parseFloat(value);
+            if (!Number.isFinite(amount)) {
+                return value ? `${value} ${currency || 'EUR'}` : '-';
+            }
+
+            if ((currency || 'EUR') === 'EUR') {
+                return currencyFormatter.format(amount);
+            }
+
+            return `${amount.toFixed(2)} ${currency}`;
         }
 
         function handleFile(file) {
@@ -359,110 +809,340 @@
                 return;
             }
 
-            originalFileName = file.name;
-
             const reader = new FileReader();
-            reader.onload = (e) => {
+            reader.onload = (event) => {
                 try {
                     const parser = new DOMParser();
-                    xmlDoc = parser.parseFromString(e.target.result, 'application/xml');
+                    const parsedDoc = parser.parseFromString(event.target.result, 'application/xml');
+                    const parseError = parsedDoc.querySelector('parsererror');
 
-                    // Check for parse errors
-                    const parseError = xmlDoc.querySelector('parsererror');
                     if (parseError) {
-                        showError(t.errorInvalid + ': ' + parseError.textContent.substring(0, 100));
-                        xmlDoc = null;
+                        showError(`${t.errorInvalid}: ${parseError.textContent.substring(0, 120)}`);
                         return;
                     }
 
-                    // Find ReqdExctnDt to verify it's a SEPA file
-                    const reqdExctnDt = xmlDoc.getElementsByTagNameNS('*', 'ReqdExctnDt')[0];
-                    if (!reqdExctnDt) {
+                    const summary = parseSepaPayments(parsedDoc);
+                    if (!summary.originalDate) {
                         showError(t.errorSepa);
-                        xmlDoc = null;
                         return;
                     }
 
-                    originalDate = reqdExctnDt.textContent;
+                    state.xmlDoc = parsedDoc;
+                    state.originalFileName = file.name;
+                    state.summary = summary;
 
-                    // Update UI
                     fileName.textContent = file.name;
                     dropZone.classList.add('has-file');
 
-                    updatePreview();
-                } catch (err) {
-                    showError(t.errorRead + ': ' + err.message);
-                    xmlDoc = null;
+                    renderDatePanel();
+                    renderQrPanel();
+                } catch (error) {
+                    showError(`${t.errorRead}: ${error.message}`);
                 }
             };
+
             reader.onerror = () => {
                 showError(t.errorRead);
             };
+
             reader.readAsText(file);
         }
 
-        function updatePreview() {
-            if (!xmlDoc) return;
+        function parseSepaPayments(xmlDoc) {
+            const originalDate = readChildText(xmlDoc, 'ReqdExctnDt');
+            const debtorName = readChildText(xmlDoc, 'Dbtr') ? readChildText(xmlDoc.getElementsByTagNameNS('*', 'Dbtr')[0], 'Nm') : '';
+            const totalAmount = readChildText(xmlDoc, 'CtrlSum');
+            const txCount = readChildText(xmlDoc, 'NbOfTxs');
+            const payments = Array.from(xmlDoc.getElementsByTagNameNS('*', 'CdtTrfTxInf')).map((txNode, index) => {
+                const amountNode = txNode.getElementsByTagNameNS('*', 'InstdAmt')[0];
+                const creditorNode = txNode.getElementsByTagNameNS('*', 'Cdtr')[0];
+                const creditorAgentNode = txNode.getElementsByTagNameNS('*', 'CdtrAgt')[0];
+                const remittanceNode = txNode.getElementsByTagNameNS('*', 'RmtInf')[0];
+                const paymentIdNode = txNode.getElementsByTagNameNS('*', 'PmtId')[0];
 
-            const newDate = newDateInput.value;
+                return {
+                    index: index + 1,
+                    creditorName: readChildText(creditorNode, 'Nm'),
+                    iban: readChildText(txNode.getElementsByTagNameNS('*', 'CdtrAcct')[0], 'IBAN').replace(/\s+/g, ''),
+                    bic: readChildText(creditorAgentNode, 'BIC').replace(/\s+/g, '').toUpperCase(),
+                    amount: amountNode ? sanitizeText(amountNode.textContent) : '',
+                    currency: amountNode ? amountNode.getAttribute('Ccy') || 'EUR' : 'EUR',
+                    remittanceText: readChildText(remittanceNode, 'Ustrd'),
+                    endToEndId: readChildText(paymentIdNode, 'EndToEndId'),
+                    instructionId: readChildText(paymentIdNode, 'InstrId')
+                };
+            });
 
-            // Get payment info
-            const nbOfTxs = xmlDoc.getElementsByTagNameNS('*', 'NbOfTxs')[0];
-            const ctrlSum = xmlDoc.getElementsByTagNameNS('*', 'CtrlSum')[0];
-            const dbtrName = xmlDoc.getElementsByTagNameNS('*', 'Dbtr')[0]?.getElementsByTagNameNS('*', 'Nm')[0];
+            return {
+                originalDate,
+                debtorName,
+                totalAmount,
+                txCount: txCount || String(payments.length),
+                payments
+            };
+        }
 
-            oldDateEl.textContent = originalDate;
-            newDateDisplayEl.textContent = newDate;
-            txCountEl.textContent = nbOfTxs ? nbOfTxs.textContent : '-';
-            totalAmountEl.textContent = ctrlSum ? ctrlSum.textContent + ' EUR' : '-';
-            debtorNameEl.textContent = dbtrName ? dbtrName.textContent.trim() : '-';
+        function renderDatePanel() {
+            if (!state.summary) {
+                dateInfoPanel.hidden = true;
+                downloadBtn.disabled = true;
+                return;
+            }
 
-            infoPanel.classList.add('visible');
+            oldDateEl.textContent = state.summary.originalDate || '-';
+            newDateDisplayEl.textContent = newDateInput.value || '-';
+            txCountEl.textContent = state.summary.txCount;
+            totalAmountEl.textContent = formatAmount(state.summary.totalAmount, 'EUR');
+            debtorNameEl.textContent = state.summary.debtorName || '-';
+
+            dateInfoPanel.hidden = false;
             downloadBtn.disabled = false;
         }
 
-        downloadBtn.addEventListener('click', () => {
-            if (!xmlDoc) return;
+        function renderQrPanel() {
+            qrGrid.innerHTML = '';
 
-            const newDate = newDateInput.value;
-            const now = new Date().toISOString().split('.')[0]; // Format: 2026-03-12T10:30:45
-
-            // Update all ReqdExctnDt elements
-            const reqdExctnDtList = xmlDoc.getElementsByTagNameNS('*', 'ReqdExctnDt');
-            for (let i = 0; i < reqdExctnDtList.length; i++) {
-                reqdExctnDtList[i].textContent = newDate;
+            if (!state.summary) {
+                qrInfoPanel.hidden = true;
+                qrEmptyState.hidden = false;
+                printQrBtn.disabled = true;
+                return;
             }
 
-            // Update CreDtTm to current datetime
-            const creDtTmList = xmlDoc.getElementsByTagNameNS('*', 'CreDtTm');
-            for (let i = 0; i < creDtTmList.length; i++) {
-                creDtTmList[i].textContent = now;
+            qrTxCountEl.textContent = state.summary.txCount;
+            qrTotalAmountEl.textContent = formatAmount(state.summary.totalAmount, 'EUR');
+            qrExecutionDateEl.textContent = state.summary.originalDate || '-';
+            qrInfoPanel.hidden = false;
+
+            const fragment = document.createDocumentFragment();
+            let generatedCount = 0;
+
+            state.summary.payments.forEach((payment) => {
+                try {
+                    const payload = buildEpcPayload(payment);
+                    const qrCanvas = createQrCanvas(payload, 6, 24);
+                    fragment.appendChild(createQrCard(payment, qrCanvas));
+                    generatedCount += 1;
+                } catch (error) {
+                    fragment.appendChild(createQrErrorCard(payment, error.message));
+                }
+            });
+
+            qrGrid.appendChild(fragment);
+            qrEmptyState.hidden = state.summary.payments.length > 0;
+            printQrBtn.disabled = generatedCount === 0;
+        }
+
+        function buildEpcPayload(payment) {
+            if (!payment.creditorName || !payment.iban) {
+                throw new Error(t.errorQrFields);
             }
 
-            // Serialize back to string
-            const serializer = new XMLSerializer();
-            let xmlString = serializer.serializeToString(xmlDoc);
-
-            // Ensure proper XML declaration
-            if (!xmlString.startsWith('<?xml')) {
-                xmlString = '<?xml version="1.0" encoding="UTF-8"?>\n' + xmlString;
+            const currency = (payment.currency || 'EUR').toUpperCase();
+            if (currency !== 'EUR') {
+                throw new Error(t.errorQrCurrency);
             }
 
-            // Create download
-            const blob = new Blob([xmlString], { type: 'application/xml' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
+            const amountNumber = Number.parseFloat(payment.amount);
+            const amount = Number.isFinite(amountNumber) ? `EUR${amountNumber.toFixed(2)}` : '';
+            const remittanceText = truncateValue(payment.remittanceText || payment.endToEndId, 140, 560);
+            const beneficiaryInfo = truncateValue(
+                payment.endToEndId && payment.endToEndId !== remittanceText ? `E2E ${payment.endToEndId}` : '',
+                70,
+                280
+            );
 
-            // Generate new filename
-            const baseName = originalFileName.replace(/\.xml$/i, '');
-            a.download = `${baseName}_${newDate}.xml`;
+            const lines = [
+                'BCD',
+                '002',
+                '1',
+                'SCT',
+                isValidBic(payment.bic) ? payment.bic : '',
+                truncateValue(payment.creditorName, 70, 280),
+                truncateValue(payment.iban.toUpperCase(), 34, 34),
+                amount,
+                '',
+                '',
+                remittanceText,
+                beneficiaryInfo
+            ];
 
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        });
+            while (lines.length > 0 && lines[lines.length - 1] === '') {
+                lines.pop();
+            }
+
+            if (lines.length < 7) {
+                throw new Error(t.errorQrFields);
+            }
+
+            let payload = lines.join('\n');
+
+            if (byteLength(payload) > 331) {
+                lines[11] = '';
+                while (lines.length > 0 && lines[lines.length - 1] === '') {
+                    lines.pop();
+                }
+                payload = lines.join('\n');
+            }
+
+            if (byteLength(payload) > 331) {
+                const reservedPrefix = [
+                    'BCD',
+                    '002',
+                    '1',
+                    'SCT',
+                    isValidBic(payment.bic) ? payment.bic : '',
+                    truncateValue(payment.creditorName, 70, 280),
+                    truncateValue(payment.iban.toUpperCase(), 34, 34),
+                    amount,
+                    '',
+                    ''
+                ].join('\n');
+                const remainingBytes = 331 - byteLength(`${reservedPrefix}\n`);
+                lines[10] = truncateValue(remittanceText, 140, Math.max(remainingBytes, 0));
+                while (lines.length > 0 && lines[lines.length - 1] === '') {
+                    lines.pop();
+                }
+                payload = lines.join('\n');
+            }
+
+            if (byteLength(payload) > 331) {
+                throw new Error(t.errorQrTooLong);
+            }
+
+            return payload;
+        }
+
+        function isValidBic(value) {
+            return /^[A-Z0-9]{8}([A-Z0-9]{3})?$/.test(value || '');
+        }
+
+        function createQrCanvas(payload, cellSize, margin) {
+            const qr = qrcode(0, 'M');
+            qr.addData(payload, 'Byte');
+            qr.make();
+
+            const moduleCount = qr.getModuleCount();
+            const size = moduleCount * cellSize + margin * 2;
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+
+            canvas.width = size;
+            canvas.height = size;
+
+            context.fillStyle = '#ffffff';
+            context.fillRect(0, 0, size, size);
+            context.fillStyle = '#111111';
+
+            for (let row = 0; row < moduleCount; row += 1) {
+                for (let col = 0; col < moduleCount; col += 1) {
+                    if (qr.isDark(row, col)) {
+                        context.fillRect(
+                            margin + col * cellSize,
+                            margin + row * cellSize,
+                            cellSize,
+                            cellSize
+                        );
+                    }
+                }
+            }
+
+            return canvas;
+        }
+
+        function createQrCard(payment, qrCanvas) {
+            const card = document.createElement('article');
+            card.className = 'qr-card';
+
+            const heading = document.createElement('div');
+            heading.className = 'qr-card-header';
+            heading.innerHTML = `
+                <div class="qr-card-title">${escapeHtml(payment.creditorName || '-')}</div>
+                <div class="qr-card-amount">${escapeHtml(formatAmount(payment.amount, payment.currency || 'EUR'))}</div>
+            `;
+
+            const canvasWrap = document.createElement('div');
+            canvasWrap.className = 'qr-canvas-wrap';
+            canvasWrap.appendChild(qrCanvas);
+
+            const meta = document.createElement('div');
+            meta.className = 'qr-meta';
+            meta.appendChild(createMetaRow(t.iban, payment.iban || '-'));
+            meta.appendChild(createMetaRow(t.bic, payment.bic || '-'));
+            meta.appendChild(createMetaRow(t.remittance, payment.remittanceText || '-'));
+            meta.appendChild(createMetaRow(t.reference, payment.endToEndId || payment.instructionId || '-'));
+
+            const actions = document.createElement('div');
+            actions.className = 'qr-actions';
+
+            const downloadButton = document.createElement('button');
+            downloadButton.type = 'button';
+            downloadButton.className = 'btn btn-secondary';
+            downloadButton.textContent = t.downloadPng;
+            downloadButton.addEventListener('click', () => {
+                const slug = slugify(`${payment.index}_${payment.creditorName || 'payment'}`);
+                downloadCanvas(qrCanvas, `${slug}.png`);
+            });
+
+            actions.appendChild(downloadButton);
+
+            card.appendChild(heading);
+            card.appendChild(canvasWrap);
+            card.appendChild(meta);
+            card.appendChild(actions);
+
+            return card;
+        }
+
+        function createQrErrorCard(payment, message) {
+            const card = document.createElement('article');
+            card.className = 'qr-card';
+
+            card.innerHTML = `
+                <div class="qr-card-header">
+                    <div class="qr-card-title">${escapeHtml(payment.creditorName || `Payment ${payment.index}`)}</div>
+                    <div class="qr-card-amount">${escapeHtml(formatAmount(payment.amount, payment.currency || 'EUR'))}</div>
+                </div>
+                <div class="note">${escapeHtml(message)}</div>
+            `;
+
+            return card;
+        }
+
+        function createMetaRow(label, value) {
+            const row = document.createElement('div');
+            row.className = 'qr-meta-row';
+            row.innerHTML = `
+                <span class="qr-meta-label">${escapeHtml(label)}</span>
+                <span>${escapeHtml(value)}</span>
+            `;
+            return row;
+        }
+
+        function downloadCanvas(canvas, fileNameValue) {
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/png');
+            link.download = fileNameValue;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function slugify(value) {
+            return sanitizeText(value)
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-+|-+$/g, '') || 'payment';
+        }
+
+        function escapeHtml(value) {
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
     </script>
 </body>
 </html>
