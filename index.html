@@ -571,7 +571,8 @@
         };
 
         const langParam = new URLSearchParams(window.location.search).get('lang');
-        const lang = langParam === 'sk' ? 'sk' : 'en';
+        const browserLang = navigator.language && navigator.language.startsWith('sk') ? 'sk' : 'en';
+        const lang = langParam === 'en' || langParam === 'sk' ? langParam : browserLang;
         const t = translations[lang];
         const currencyFormatter = new Intl.NumberFormat(lang, {
             style: 'currency',
