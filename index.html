@@ -727,6 +727,19 @@
             return `${amount.toFixed(2)} ${currency}`;
         }
 
+        function normalizePaymentReference(value) {
+            const normalized = sanitizeText(value).toUpperCase();
+            if (!normalized || normalized === 'NOTPROVIDED') {
+                return '';
+            }
+
+            if (/^\/VS\d{0,10}\/SS\d{0,10}\/KS\d{0,4}$/.test(normalized)) {
+                return normalized;
+            }
+
+            return '';
+        }
+
         function parseSepaPayments(xmlDoc) {
             const originalDate = readChildText(xmlDoc, 'ReqdExctnDt');
             const nbOfTxs = readChildText(xmlDoc, 'NbOfTxs');
@@ -870,12 +883,13 @@
 
             const amountNumber = Number.parseFloat(payment.amount);
             const amount = Number.isFinite(amountNumber) ? `EUR${amountNumber.toFixed(2)}` : '';
-            const remittanceText = truncateValue(payment.remittanceText || payment.endToEndId, 140, 560);
-            const beneficiaryInfo = truncateValue(
-                payment.endToEndId && payment.endToEndId !== remittanceText ? `E2E ${payment.endToEndId}` : '',
-                70,
-                280
-            );
+            const paymentReference = normalizePaymentReference(payment.endToEndId);
+            const remittanceSource = paymentReference || payment.remittanceText || payment.endToEndId;
+            const beneficiarySource = paymentReference
+                ? payment.remittanceText
+                : (payment.endToEndId && payment.endToEndId !== remittanceSource ? `E2E ${payment.endToEndId}` : '');
+            const remittanceText = truncateValue(remittanceSource, 140, 560);
+            const beneficiaryInfo = truncateValue(beneficiarySource, 70, 280);
 
             const lines = [
                 'BCD',
