@@ -471,7 +471,7 @@
             <div class="info-panel" id="qrInfoPanel">
                 <div class="info-row">
                     <span class="info-label" data-i18n="qrFormat">QR Format</span>
-                    <span class="info-value">EPC / SCT</span>
+                    <span class="info-value" id="qrFormatValue">-</span>
                 </div>
                 <div class="info-row">
                     <span class="info-label" data-i18n="transactions">Transactions</span>
@@ -517,8 +517,11 @@
                 totalAmount: 'Total Amount',
                 debtor: 'Debtor',
                 download: 'Download Modified XML',
-                qrNote: 'Generates one EPC / SEPA Credit Transfer QR code for each payment. Everything stays in your browser.',
+                qrNote: 'Generates one payment QR code for each payment. Everything stays in your browser.',
                 qrFormat: 'QR Format',
+                qrFormatAuto: 'Auto',
+                qrFormatEpc: 'EPC / SCT',
+                qrFormatPayme: 'Payme / Payment Link',
                 executionDate: 'Execution Date',
                 printQr: 'Print QR Sheet',
                 qrEmpty: 'Load a SEPA payment XML file to generate one QR code for each payment.',
@@ -549,8 +552,11 @@
                 totalAmount: 'Celková suma',
                 debtor: 'Platca',
                 download: 'Stiahnuť upravený XML',
-                qrNote: 'Vygeneruje jeden EPC / SEPA Credit Transfer QR kód pre každú platbu. Všetko zostáva vo vašom prehliadači.',
+                qrNote: 'Vygeneruje jeden platobný QR kód pre každú platbu. Všetko zostáva vo vašom prehliadači.',
                 qrFormat: 'QR formát',
+                qrFormatAuto: 'Automaticky',
+                qrFormatEpc: 'EPC / SCT',
+                qrFormatPayme: 'Payme / Payment Link',
                 executionDate: 'Dátum splatnosti',
                 printQr: 'Vytlačiť QR kartu',
                 qrEmpty: 'Nahrajte SEPA XML súbor a vygeneruje sa jeden QR kód pre každú platbu.',
@@ -605,6 +611,7 @@
         const qrTxCountEl = document.getElementById('qrTxCount');
         const qrTotalAmountEl = document.getElementById('qrTotalAmount');
         const qrExecutionDateEl = document.getElementById('qrExecutionDate');
+        const qrFormatValueEl = document.getElementById('qrFormatValue');
         const qrGrid = document.getElementById('qrGrid');
         const qrEmptyState = document.getElementById('qrEmptyState');
         const printQrBtn = document.getElementById('printQrBtn');
@@ -851,6 +858,7 @@
             qrTxCountEl.textContent = state.summary.txCount;
             qrTotalAmountEl.textContent = formatAmount(state.summary.totalAmount, 'EUR');
             qrExecutionDateEl.textContent = state.summary.originalDate || '-';
+            qrFormatValueEl.textContent = detectQrFormatLabel(state.summary);
             qrInfoPanel.classList.add('visible');
 
             const fragment = document.createDocumentFragment();
@@ -858,7 +866,7 @@
 
             state.summary.payments.forEach((payment) => {
                 try {
-                    const payload = buildEpcPayload(payment);
+                    const payload = buildQrPayload(payment, state.summary.originalDate);
                     const qrModel = createQrModel(payload);
                     fragment.appendChild(createQrCard(payment, qrModel));
                     generatedCount += 1;
@@ -870,6 +878,10 @@
             qrGrid.appendChild(fragment);
             qrEmptyState.classList.toggle('hidden', state.summary.payments.length > 0);
             printQrBtn.disabled = generatedCount === 0;
+        }
+
+        function detectQrFormatLabel(summary) {
+            return t.qrFormatEpc;
         }
 
         function buildEpcPayload(payment) {
@@ -884,12 +896,13 @@
             const amountNumber = Number.parseFloat(payment.amount);
             const amount = Number.isFinite(amountNumber) ? `EUR${amountNumber.toFixed(2)}` : '';
             const paymentReference = normalizePaymentReference(payment.endToEndId);
-            const remittanceSource = paymentReference || payment.remittanceText || payment.endToEndId;
-            const beneficiarySource = paymentReference
-                ? payment.remittanceText
-                : (payment.endToEndId && payment.endToEndId !== remittanceSource ? `E2E ${payment.endToEndId}` : '');
-            const remittanceText = truncateValue(remittanceSource, 140, 560);
-            const beneficiaryInfo = truncateValue(beneficiarySource, 70, 280);
+            const structuredReference = truncateValue(paymentReference, 35, 35);
+            const remittanceText = truncateValue(payment.remittanceText || (!paymentReference ? payment.endToEndId : ''), 140, 560);
+            const beneficiaryInfo = truncateValue(
+                !paymentReference && payment.endToEndId && payment.endToEndId !== remittanceText ? `E2E ${payment.endToEndId}` : '',
+                70,
+                280
+            );
 
             const lines = [
                 'BCD',
@@ -901,7 +914,7 @@
                 truncateValue(payment.iban.toUpperCase(), 34, 34),
                 amount,
                 '',
-                '',
+                structuredReference,
                 remittanceText,
                 beneficiaryInfo
             ];
@@ -931,6 +944,7 @@
                     truncateValue(payment.iban.toUpperCase(), 34, 34),
                     amount,
                     '',
+                    structuredReference,
                     ''
                 ].join('\n');
                 const remainingBytes = 331 - byteLength(prefix + '\n');
@@ -946,6 +960,10 @@
             }
 
             return payload;
+        }
+
+        function buildQrPayload(payment, executionDate) {
+            return buildEpcPayload(payment);
         }
 
         function isValidBic(value) {
