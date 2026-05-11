@@ -310,7 +310,8 @@
             margin-bottom: 12px;
         }
 
-        .qr-canvas-wrap canvas {
+        .qr-canvas-wrap canvas,
+        .qr-canvas-wrap svg {
             width: 220px;
             max-width: 100%;
             height: auto;
@@ -845,8 +846,8 @@
             state.summary.payments.forEach((payment) => {
                 try {
                     const payload = buildEpcPayload(payment);
-                    const qrCanvas = createQrCanvas(payload, 6, 24);
-                    fragment.appendChild(createQrCard(payment, qrCanvas));
+                    const qrModel = createQrModel(payload);
+                    fragment.appendChild(createQrCard(payment, qrModel));
                     generatedCount += 1;
                 } catch (error) {
                     fragment.appendChild(createQrErrorCard(payment, error.message));
@@ -937,11 +938,50 @@
             return /^[A-Z0-9]{8}([A-Z0-9]{3})?$/.test(value || '');
         }
 
-        function createQrCanvas(payload, cellSize, margin) {
+        function createQrModel(payload) {
             const qr = qrcode(0, 'M');
             qr.addData(payload, 'Byte');
             qr.make();
+            return qr;
+        }
 
+        function createQrSvg(qr, cellSize, margin) {
+            const moduleCount = qr.getModuleCount();
+            const size = moduleCount * cellSize + margin * 2;
+            const svgNS = 'http://www.w3.org/2000/svg';
+            const svg = document.createElementNS(svgNS, 'svg');
+            svg.setAttribute('viewBox', `0 0 ${size} ${size}`);
+            svg.setAttribute('width', size);
+            svg.setAttribute('height', size);
+            svg.setAttribute('role', 'img');
+            svg.setAttribute('aria-label', 'Payment QR code');
+
+            const background = document.createElementNS(svgNS, 'rect');
+            background.setAttribute('x', '0');
+            background.setAttribute('y', '0');
+            background.setAttribute('width', String(size));
+            background.setAttribute('height', String(size));
+            background.setAttribute('fill', '#ffffff');
+            svg.appendChild(background);
+
+            for (let row = 0; row < moduleCount; row++) {
+                for (let col = 0; col < moduleCount; col++) {
+                    if (qr.isDark(row, col)) {
+                        const rect = document.createElementNS(svgNS, 'rect');
+                        rect.setAttribute('x', String(margin + (col * cellSize)));
+                        rect.setAttribute('y', String(margin + (row * cellSize)));
+                        rect.setAttribute('width', String(cellSize));
+                        rect.setAttribute('height', String(cellSize));
+                        rect.setAttribute('fill', '#000000');
+                        svg.appendChild(rect);
+                    }
+                }
+            }
+
+            return svg;
+        }
+
+        function createQrCanvas(qr, cellSize, margin) {
             const moduleCount = qr.getModuleCount();
             const size = moduleCount * cellSize + margin * 2;
             const canvas = document.createElement('canvas');
@@ -949,19 +989,10 @@
 
             canvas.width = size;
             canvas.height = size;
-
             context.fillStyle = '#ffffff';
             context.fillRect(0, 0, size, size);
+            context.fillStyle = '#000000';
 
-            if (typeof qr.renderTo2dContext === 'function') {
-                context.save();
-                context.translate(margin, margin);
-                qr.renderTo2dContext(context, cellSize);
-                context.restore();
-                return canvas;
-            }
-
-            context.fillStyle = '#111111';
             for (let row = 0; row < moduleCount; row++) {
                 for (let col = 0; col < moduleCount; col++) {
                     if (qr.isDark(row, col)) {
@@ -973,7 +1004,7 @@
             return canvas;
         }
 
-        function createQrCard(payment, qrCanvas) {
+        function createQrCard(payment, qrModel) {
             const card = document.createElement('article');
             card.className = 'qr-card';
 
@@ -986,7 +1017,7 @@
 
             const canvasWrap = document.createElement('div');
             canvasWrap.className = 'qr-canvas-wrap';
-            canvasWrap.appendChild(qrCanvas);
+            canvasWrap.appendChild(createQrSvg(qrModel, 6, 24));
 
             const meta = document.createElement('div');
             meta.className = 'qr-meta';
@@ -1000,6 +1031,7 @@
             button.className = 'btn btn-secondary qr-download-btn';
             button.textContent = t.downloadPng;
             button.addEventListener('click', () => {
+                const qrCanvas = createQrCanvas(qrModel, 6, 24);
                 downloadCanvas(qrCanvas, `${slugify(`${payment.index}_${payment.creditorName || 'payment'}`)}.png`);
             });
 
